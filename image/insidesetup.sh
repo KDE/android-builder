@@ -94,7 +94,7 @@ chmod +x /home/kdeandroid/qt-installer.run
 apt-get install xvfb -y
 Xvfb :1 -screen 0 1024x768x16 &> /tmp/xvfb.log &
 ps aux | grep X
-DISPLAY=:1 /home/kdeandroid/qt-installer.run --script /root/qtinstallerconfig.qs -v
+DISPLAY=:1 /home/kdeandroid/qt-installer.run --script /root/qtinstallerconfig.qs -v || true
 chown -R kdeandroid:kdeandroid /home/kdeandroid/Qt5.5.0
 apt-get remove xvfb -y
 rm /home/kdeandroid/qt-installer.run
