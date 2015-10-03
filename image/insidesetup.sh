@@ -53,6 +53,7 @@ echo "Download SDK..."
 su - kdeandroid -c "curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz > android-sdk.tgz"
 echo "Download NKD..."
 su - kdeandroid -c "curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin > android-ndk.bin"
+rm /home/kdeandroid/android-sdk.tgz
 
 # unpack SDK
 echo "SDK: unpacking..."
