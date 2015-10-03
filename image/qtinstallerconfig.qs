@@ -104,6 +104,7 @@ Controller.prototype.PerformInstallationPageCallback = function()
 
 Controller.prototype.FinishedPageCallback = function()
 {
+    console.log("Installation finished.")
     var page = gui.pageWidgetByObjectName("FinishedPage")
     // work-around for disabling QtCreator launch:
     // apparently the page.RunItCheckBox option is not used

@@ -39,7 +39,6 @@ apt-get install zlib1g:i386 libgcc1:i386 libc6:i386 -y
 # create user 'kdeandroid' and change to it
 adduser kdeandroid --gecos "" --disabled-password
 su - kdeandroid
-#su - kdeandroid -c "git clone git://anongit.kde.org/xutils.git /home/plasmamobile/xutils"
 echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers
 
 cat << EOF > /home/kdeandroid/.gitconfig
@@ -50,7 +49,9 @@ cat << EOF > /home/kdeandroid/.gitconfig
 EOF
 
 # get SDK & NDK
+echo "Download SDK..."
 su - kdeandroid -c "curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz > android-sdk.tgz"
+echo "Download NKD..."
 su - kdeandroid -c "curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin > android-ndk.bin"
 
 # unpack SDK
@@ -75,12 +76,28 @@ chown kdeandroid:kdeandroid /home/kdeandroid/accept-sdk-license.sh
 chmod +x /home/kdeandroid/accept-sdk-license.sh
 echo "SDK: updating..."
 su - kdeandroid -c "/home/kdeandroid/accept-sdk-license.sh"
-rm /home/kdeandroid/android-accept-licenses.sh
+rm /home/kdeandroid/accept-sdk-license.sh
 echo "SDK: done."
 
 # unpack NDK
 echo "NDK: unpacking..."
 chmod +x /home/kdeandroid/android-ndk.bin
 su - kdeandroid -c /home/kdeandroid/android-ndk.bin
+rm /home/kdeandroid/android-ndk.bin
 echo "NDK: done."
+
+#get Qt for Android
+echo "Qt Installer: downloading..."
+su - kdeandroid -c "curl http://master.qt.io/archive/qt/5.5/5.5.0/qt-opensource-linux-x64-android-5.5.0-2.run > /home/kdeandroid/qt-installer.run"
+chmod +x /home/kdeandroid/qt-installer.run
+# we need virtual framebuffer provide a window for the GUI
+apt-get install xvfb -y
+Xvfb :1 -screen 0 1024x768x16 &> /tmp/xvfb.log &
+ps aux | grep X
+DISPLAY=:1 /home/kdeandroid/qt-installer.run --script /root/qtinstallerconfig.qs -v
+chown -R kdeandroid:kdeandroid /home/kdeandroid/Qt5.5.0
+apt-get remove xvfb -y
+rm /home/kdeandroid/qt-installer.run
+echo "Qt Installer: done."
+echo "Configuration finished, finalizing Docker image..."
 
