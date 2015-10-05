@@ -116,7 +116,10 @@ export Qt5_android=$ADIR/Qt5.5.0/5.5/android_armv7/
 export PATH=$ADIR/android-sdk-linux/platform-tools/:$PATH
 export ANT=/usr/bin/ant
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
-export CMAKE_PREFIX_PATH=$ADIR/kde/install/
+
+function cmakeandroid {
+    cmake $@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH="${Qt5_android};$ADIR/kde/install" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake
+}
 EOF
 
 # get KDESRC build and android configurations
