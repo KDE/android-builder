@@ -105,7 +105,7 @@ rm $ADIR/qt-installer.run
 echo "Qt Installer: done."
 
 # set environment variables
-cat << EOF >> /home/kdeandroid/.profile
+cat << EOF >> /home/kdeandroid/.bashrc
 export ADIR=$ADIR
 export ANDROID_NDK=$ADIR/android-ndk-r10e
 export ANDROID_SDK_ROOT=$ADIR/android-sdk-linux
