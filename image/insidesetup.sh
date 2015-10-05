@@ -87,7 +87,7 @@ echo "SDK: done."
 # unpack NDK
 echo "NDK: unpacking..."
 chmod +x $ADIR/android-ndk.bin
-$ADIR/android-ndk.bin
+$ADIR/android-ndk.bin -o{$ADIR}
 rm $ADIR/android-ndk.bin
 echo "NDK: done."
 
