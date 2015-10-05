@@ -61,7 +61,7 @@ curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin > $ADIR/
 
 # unpack SDK
 echo "SDK: unpacking..."
-tar xfl $ADIR/android-sdk.tgz
+tar xfl $ADIR/android-sdk.tgz -C $ADIR/
 cat << EOF > $ADIR/accept-sdk-license.sh
 #!/usr/bin/expect -f
 
