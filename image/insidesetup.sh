@@ -122,6 +122,10 @@ git clone git://anongit.kde.org/kdesrc-build $ADIR/extragear/kdesrc-build
 ln -s $ADIR/extragear/kdesrc-build/kdesrc-build $ADIR/kdesrc-build
 ln -s $ADIR/kdesrc-conf-android/kdesrc-buildrc $ADIR/kdesrc-buildrc
 chown -R kdeandroid:kdeandroid /home/kdeandroid/
+apt-get install \
+  libxml-simple-perl \
+  -y
+
 
 echo "Configuration finished, finalizing Docker image..."
 
