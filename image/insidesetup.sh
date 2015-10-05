@@ -28,6 +28,7 @@ apt-get install \
   cmake \
   curl \
   expect \
+  git \
   openjdk-7-jdk \
   openjdk-7-jre \
   -y
@@ -115,9 +116,8 @@ export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
 EOF
 
 # get KDESRC build and android configurations
-cd /opt/android
 git clone git://anongit.kde.org/scratch/cordlandwehr/kdesrc-conf-android.git $ADIR/kdesrc-conf-android
-mkdir -p extragear/kdesrc-build
+mkdir -p $ADIR/extragear/kdesrc-build
 git clone kde:kdesrc-build $ADIR/extragear/kdesrc-build
 ln -s $ADIR/extragear/kdesrc-build/kdesrc-build $ADIR/kdesrc-build
 ln -s $ADIR/kdesrc-conf-android/kdesrc-buildrc $ADIR/kdesrc-buildrc
