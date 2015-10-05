@@ -30,7 +30,7 @@ apt-get install \
   ant \
   build-essential \
   cmake \
-  qmake \
+  qt5-qmake \
   curl \
   expect \
   git \
