@@ -118,7 +118,7 @@ EOF
 # get KDESRC build and android configurations
 git clone git://anongit.kde.org/scratch/cordlandwehr/kdesrc-conf-android.git $ADIR/kdesrc-conf-android
 mkdir -p $ADIR/extragear/kdesrc-build
-git clone kde:kdesrc-build $ADIR/extragear/kdesrc-build
+git clone git://anongit.kde.org/kdesrc-build $ADIR/extragear/kdesrc-build
 ln -s $ADIR/extragear/kdesrc-build/kdesrc-build $ADIR/kdesrc-build
 ln -s $ADIR/kdesrc-conf-android/kdesrc-buildrc $ADIR/kdesrc-buildrc
 chown -R kdeandroid:kdeandroid /home/kdeandroid/
