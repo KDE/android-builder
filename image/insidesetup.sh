@@ -133,5 +133,8 @@ apt-get install \
 # give ownership about everything to kdeandroid user
 chown -R kdeandroid:kdeandroid $ADIR
 
+# run kdesrc-build and setup ECM
+su - kdeandroid -c "cd $ADIR && ./kdesrc-build extra-cmake-modules"
+
 echo "Configuration finished, finalizing Docker image..."
 
