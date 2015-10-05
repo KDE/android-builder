@@ -10,17 +10,17 @@ dpkg --add-architecture i386
 mkdir -p /opt/android/
 export ADIR=/opt/android/
 
-echo "deb [arch=armhf] http://ports.ubuntu.com/ vivid main universe restricted
-deb-src [arch=armhf]  http://ports.ubuntu.com/ vivid main universe restricted
+echo "deb [arch=armhf] http://ports.ubuntu.com/ wily main universe restricted
+deb-src [arch=armhf]  http://ports.ubuntu.com/ wily main universe restricted
 
-deb [arch=armhf] http://ports.ubuntu.com/ vivid-updates main universe restricted
-deb-src [arch=armhf] http://ports.ubuntu.com/ vivid-updates main universe restricted
+deb [arch=armhf] http://ports.ubuntu.com/ wily-updates main universe restricted
+deb-src [arch=armhf] http://ports.ubuntu.com/ wily-updates main universe restricted
 
-deb [arch=i386,amd64] http://archive.ubuntu.com/ubuntu vivid main universe restricted
-deb-src [arch=i386,amd64] http://archive.ubuntu.com/ubuntu vivid main universe restricted
+deb [arch=i386,amd64] http://archive.ubuntu.com/ubuntu wily main universe restricted
+deb-src [arch=i386,amd64] http://archive.ubuntu.com/ubuntu wily main universe restricted
 
-deb [arch=i386,amd64] http://archive.ubuntu.com/ubuntu vivid-updates main universe restricted
-deb-src [arch=i386,amd64] http://archive.ubuntu.com/ubuntu vivid-updates main universe restricted
+deb [arch=i386,amd64] http://archive.ubuntu.com/ubuntu wily-updates main universe restricted
+deb-src [arch=i386,amd64] http://archive.ubuntu.com/ubuntu wily-updates main universe restricted
 " > /etc/apt/sources.list
 
 echo 'Debug::pkgProblemResolver "true";' > /etc/apt/apt.conf.d/debug
