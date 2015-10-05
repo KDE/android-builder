@@ -62,7 +62,7 @@ Controller.prototype.TargetDirectoryPageCallback = function()
 {
     var page = gui.pageWidgetByObjectName("TargetDirectoryPage")
     // set target directory
-    page.TargetDirectoryLineEdit.text = "/home/kdeandroid/Qt5.5.0"
+    page.TargetDirectoryLineEdit.text = "/opt/android/Qt5.5.0"
     gui.clickButton(buttons.NextButton)
 }
 

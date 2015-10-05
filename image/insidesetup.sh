@@ -6,6 +6,10 @@ unset LANG #remove? or just install locales...
 source /etc/environment
 dpkg --add-architecture i386
 
+# main directory for all installations
+mkdir -p /opt/android/
+export ADIR=/opt/android/
+
 echo "deb [arch=armhf] http://ports.ubuntu.com/ vivid main universe restricted
 deb-src [arch=armhf]  http://ports.ubuntu.com/ vivid main universe restricted
 
@@ -51,20 +55,20 @@ EOF
 
 # get SDK & NDK
 echo "Download SDK..."
-su - kdeandroid -c "curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz > android-sdk.tgz"
+curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz > $ADIR/android-sdk.tgz
 echo "Download NKD..."
-su - kdeandroid -c "curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin > android-ndk.bin"
+curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin > $ADIR/android-ndk.bin
 
 # unpack SDK
 echo "SDK: unpacking..."
-su - kdeandroid -c "tar xfl /home/kdeandroid/android-sdk.tgz"
-cat << EOF > /home/kdeandroid/accept-sdk-license.sh
+tar xfl $ADIR/android-sdk.tgz
+cat << EOF > $ADIR/accept-sdk-license.sh
 #!/usr/bin/expect -f
 
 set timeout 1800
 
 # spawn update command and let's wait for password question
-spawn /home/kdeandroid/android-sdk-linux/tools/android update sdk --no-ui --filter tools,platform-tools,build-tools-22.0.1,android-22
+spawn $ADIR/android-sdk-linux/tools/android update sdk --no-ui --filter tools,platform-tools,build-tools-22.0.1,android-22
 expect {
   "Do you accept the license '*'*" {
         exp_send "y\r"
@@ -73,37 +77,34 @@ expect {
   eof
 }
 EOF
-chown kdeandroid:kdeandroid /home/kdeandroid/accept-sdk-license.sh
-chmod +x /home/kdeandroid/accept-sdk-license.sh
+chmod +x $ADIR/accept-sdk-license.sh
 echo "SDK: updating..."
-su - kdeandroid -c "/home/kdeandroid/accept-sdk-license.sh"
-rm /home/kdeandroid/accept-sdk-license.sh
-rm /home/kdeandroid/android-sdk.tgz
+$ADIR/accept-sdk-license.sh
+rm $ADIR/accept-sdk-license.sh
+rm $ADIR/android-sdk.tgz
 echo "SDK: done."
 
 # unpack NDK
 echo "NDK: unpacking..."
-chmod +x /home/kdeandroid/android-ndk.bin
-su - kdeandroid -c /home/kdeandroid/android-ndk.bin
-rm /home/kdeandroid/android-ndk.bin
+chmod +x $ADIR/android-ndk.bin
+$ADIR/android-ndk.bin
+rm $ADIR/android-ndk.bin
 echo "NDK: done."
 
 #get Qt for Android
 echo "Qt Installer: downloading..."
-su - kdeandroid -c "curl http://master.qt.io/archive/qt/5.5/5.5.0/qt-opensource-linux-x64-android-5.5.0-2.run > /home/kdeandroid/qt-installer.run"
-chmod +x /home/kdeandroid/qt-installer.run
+curl http://master.qt.io/archive/qt/5.5/5.5.0/qt-opensource-linux-x64-android-5.5.0-2.run > $ADIR/qt-installer.run
+chmod +x $ADIR/qt-installer.run
 # we need virtual framebuffer provide a window for the GUI
 apt-get install xvfb -y
 Xvfb :1 -screen 0 1024x768x16 &> /tmp/xvfb.log &
 ps aux | grep X
-DISPLAY=:1 /home/kdeandroid/qt-installer.run --script /root/qtinstallerconfig.qs -v || true
-chown -R kdeandroid:kdeandroid /home/kdeandroid/Qt5.5.0
+DISPLAY=:1 $ADIR/qt-installer.run --script /root/qtinstallerconfig.qs -v || true
 apt-get remove xvfb -y
-rm /home/kdeandroid/qt-installer.run
+rm $ADIR/qt-installer.run
 echo "Qt Installer: done."
 
 # set environment variables
-export ADIR=/home/kdeandroid
 cat << EOF >> /home/kdeandroid/.profile
 export ADIR=$ADIR
 export ANDROID_NDK=$ADIR/android-ndk-r10e
@@ -121,11 +122,14 @@ mkdir -p $ADIR/extragear/kdesrc-build
 git clone git://anongit.kde.org/kdesrc-build $ADIR/extragear/kdesrc-build
 ln -s $ADIR/extragear/kdesrc-build/kdesrc-build $ADIR/kdesrc-build
 ln -s $ADIR/kdesrc-conf-android/kdesrc-buildrc $ADIR/kdesrc-buildrc
-chown -R kdeandroid:kdeandroid /home/kdeandroid/
+# required package for running kdesrc-build
 apt-get install \
   libxml-simple-perl \
+  libjson-perl \
   -y
 
+# give ownership about everything to kdeandroid user
+chown -R kdeandroid:kdeandroid $ADIR
 
 echo "Configuration finished, finalizing Docker image..."
 
