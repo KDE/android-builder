@@ -57,7 +57,7 @@ EOF
 # get SDK & NDK
 echo "Download SDK..."
 curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz > $ADIR/android-sdk.tgz
-echo "Download NKD..."
+echo "Download NDK..."
 curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin > $ADIR/android-ndk.bin
 
 # unpack SDK
