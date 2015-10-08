@@ -69,7 +69,7 @@ cat << EOF > $ADIR/accept-sdk-license.sh
 set timeout 1800
 
 # spawn update command and let's wait for password question
-spawn $ADIR/android-sdk-linux/tools/android update sdk --no-ui --filter tools,platform-tools,build-tools-22.0.1,android-22
+spawn $ADIR/android-sdk-linux/tools/android update sdk --no-ui --filter tools,platform-tools,build-tools-23.0.1,android-22
 expect {
   "Do you accept the license '*'*" {
         exp_send "y\r"
