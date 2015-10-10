@@ -52,13 +52,12 @@ RUN echo "[url \"git://anongit.kde.org/\"]\n\
 
 # get SDK
 COPY accept-sdk-license.sh $ADIR/accept-sdk-license.sh
-RUN sudo chown kdeandroid:kdeandroid $ADIR/accept-sdk-license.sh
+RUN sudo chown kdeandroid:kdeandroid $ADIR/accept-sdk-license.sh && chmod +x $ADIR/accept-sdk-license.sh
 RUN echo "Download SDK..." && \
 curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz -o $ADIR/android-sdk.tgz && \
 # unpack SDK
 echo "SDK: unpacking..." && \
 tar xfl $ADIR/android-sdk.tgz -C $ADIR/ && \
-chmod +x $ADIR/accept-sdk-license.sh && \
 echo "SDK: updating..." && \
 $ADIR/accept-sdk-license.sh $ADIR && \
 rm $ADIR/accept-sdk-license.sh && \
