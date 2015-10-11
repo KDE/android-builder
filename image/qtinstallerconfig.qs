@@ -96,10 +96,16 @@ Controller.prototype.ReadyForInstallationPageCallback = function()
 
 Controller.prototype.PerformInstallationPageCallback = function()
 {
-    // use 60 sec timeout to let installation finish
-    // the button is blocked until installation is finished
-    console.log("Timeout for installation: 60 sec, next-button is activated afterward.")
-    gui.clickButton(buttons.NextButton, 60000)
+    // IMPORTANT: if you ever run this script with "--verbose",
+    // then you will encounter the "funny" behavior that the
+    // commit-button is not activated correctly after the installation
+    // finished.
+    // A possible workaround is to uncomment the following line, which
+    // calls the next-button with a 60-second timeout. This means, after
+    // the button gets enabled in the UI.
+    //    console.log("Timeout for installation: 60 sec, next-button is activated afterward.")
+    //    gui.clickButton(buttons.NextButton, 60000)
+    gui.clickButton(buttons.CommitButton)
 }
 
 Controller.prototype.FinishedPageCallback = function()
