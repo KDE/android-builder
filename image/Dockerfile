@@ -19,27 +19,28 @@ deb [arch=i386,amd64] http://archive.ubuntu.com/ubuntu wily-updates main univers
 deb-src [arch=i386,amd64] http://archive.ubuntu.com/ubuntu wily-updates main universe restricted\n\
 " > /etc/apt/sources.list
 
+# enable verbose apt-get output
 RUN echo 'Debug::pkgProblemResolver "true";' > /etc/apt/apt.conf.d/debug
 RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   ant \
   build-essential \
   cmake \
-  qt5-qmake \
   curl \
   expect \
   git \
+# required for running kdesrc-build
+  libxml-simple-perl \
+  libjson-perl \
   openjdk-7-jdk \
   openjdk-7-jre \
+  qt5-qmake \
   sudo \
-# we need virtual framebuffer provide a window for the Qt installer GUI
+# virtual framebuffer to provide X window for the Qt installer
   xvfb \
-# install required i386 libraries
-  zlib1g:i386 \
+# required i386 architecture libraries
   libgcc1:i386 \
   libc6:i386 \
-# required package for running kdesrc-build
-  libxml-simple-perl \
-  libjson-perl
+  zlib1g:i386
 
 RUN adduser kdeandroid --gecos "" --disabled-password && echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers && chown -R kdeandroid:kdeandroid $ADIR
 
