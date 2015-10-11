@@ -1,4 +1,4 @@
-FROM ubuntu:vivid
+FROM ubuntu:wily
 
 LABEL Description="KDE on Android SDK"
 MAINTAINER Andreas Cord-Landwehr <cordlandwehr@kde.org>
