@@ -85,9 +85,8 @@ RUN echo "Qt Installer: downloading..." && \
   chmod +x $ADIR/qt-installer.run
 
 COPY qtinstallerconfig.qs $ADIR/qtinstallerconfig.qs
-RUN Xvfb :1 -screen 0 1024x768x16 &> /tmp/xvfb.log & \
-  sleep 2 && \
-  DISPLAY=:1 $ADIR/qt-installer.run --script $ADIR/qtinstallerconfig.qs -v || true && \
+# run visual installer with simulated X window, filter out all warning messages due to not having a proper window
+RUN xvfb-run -a $ADIR/qt-installer.run --script $ADIR/qtinstallerconfig.qs -v|grep -v "Warning: QPainter" | grep -v "Warning: QWidget" || true && \
   echo "Qt Installer: done."
 
 # cleanup
