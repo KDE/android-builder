@@ -42,7 +42,9 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   libc6:i386 \
   zlib1g:i386
 
-RUN adduser kdeandroid --gecos "" --disabled-password && echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers && chown -R kdeandroid:kdeandroid $ADIR
+RUN adduser kdeandroid --gecos "" --disabled-password && \
+  echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers && \
+  chown -R kdeandroid:kdeandroid $ADIR
 
 USER kdeandroid
 RUN echo "[url \"git://anongit.kde.org/\"]\n\
@@ -53,48 +55,49 @@ RUN echo "[url \"git://anongit.kde.org/\"]\n\
 
 # get SDK
 COPY accept-sdk-license.sh $ADIR/accept-sdk-license.sh
-RUN sudo chown kdeandroid:kdeandroid $ADIR/accept-sdk-license.sh && chmod +x $ADIR/accept-sdk-license.sh
+RUN sudo chown kdeandroid:kdeandroid $ADIR/accept-sdk-license.sh && \
+  chmod +x $ADIR/accept-sdk-license.sh
 RUN echo "Download SDK..." && \
-curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz -o $ADIR/android-sdk.tgz && \
-# unpack SDK
-echo "SDK: unpacking..." && \
-tar xfl $ADIR/android-sdk.tgz -C $ADIR/ && \
-echo "SDK: updating..." && \
-$ADIR/accept-sdk-license.sh $ADIR && \
-rm $ADIR/accept-sdk-license.sh && \
-rm $ADIR/android-sdk.tgz && \
-echo "SDK: done."
+  curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz -o $ADIR/android-sdk.tgz && \
+  # unpack SDK
+  echo "SDK: unpacking..." && \
+  tar xfl $ADIR/android-sdk.tgz -C $ADIR/ && \
+  echo "SDK: updating..." && \
+  $ADIR/accept-sdk-license.sh $ADIR && \
+  rm $ADIR/accept-sdk-license.sh && \
+  rm $ADIR/android-sdk.tgz && \
+  echo "SDK: done."
 
 # get NDK
 RUN echo "Download NDK..." && \
-curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin -o $ADIR/android-ndk.bin && \
-echo "NDK: unpacking..." && \
-chmod +x $ADIR/android-ndk.bin && \
-cd $ADIR && \
-./android-ndk.bin && \
-cd / && \
-rm $ADIR/android-ndk.bin && \
-echo "NDK: done."
+  curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin -o $ADIR/android-ndk.bin && \
+  echo "NDK: unpacking..." && \
+  chmod +x $ADIR/android-ndk.bin && \
+  cd $ADIR && \
+  ./android-ndk.bin && \
+  cd / && \
+  rm $ADIR/android-ndk.bin && \
+  echo "NDK: done."
 
 #get Qt for Android
 RUN echo "Qt Installer: downloading..." && \
- curl http://master.qt.io/archive/qt/5.5/5.5.0/qt-opensource-linux-x64-android-5.5.0-2.run -o $ADIR/qt-installer.run && \
- chmod +x $ADIR/qt-installer.run
+  curl http://master.qt.io/archive/qt/5.5/5.5.0/qt-opensource-linux-x64-android-5.5.0-2.run -o $ADIR/qt-installer.run && \
+  chmod +x $ADIR/qt-installer.run
 
 COPY qtinstallerconfig.qs $ADIR/qtinstallerconfig.qs
 RUN Xvfb :1 -screen 0 1024x768x16 &> /tmp/xvfb.log & \
- sleep 2 && \
- DISPLAY=:1 $ADIR/qt-installer.run --script $ADIR/qtinstallerconfig.qs -v || true && \
- echo "Qt Installer: done."
+  sleep 2 && \
+  DISPLAY=:1 $ADIR/qt-installer.run --script $ADIR/qtinstallerconfig.qs -v || true && \
+  echo "Qt Installer: done."
 
 # cleanup
 RUN sudo apt-get remove -y\
     xvfb \
     expect \
     curl && \
- sudo apt-get autoremove -y && \
- rm $ADIR/qt-installer.run && \
- rm $ADIR/qtinstallerconfig.qs
+  sudo apt-get autoremove -y && \
+  rm $ADIR/qt-installer.run && \
+  rm $ADIR/qtinstallerconfig.qs
 
 RUN echo "\n\
 export ADIR=$ADIR\n\
@@ -112,11 +115,13 @@ function cmakeandroid {\n\
 
 # get KDESRC build and android configurations
 RUN git clone git://anongit.kde.org/scratch/cordlandwehr/kdesrc-conf-android.git $ADIR/kdesrc-conf-android && \
-mkdir -p $ADIR/extragear/kdesrc-build && \
-git clone git://anongit.kde.org/kdesrc-build $ADIR/extragear/kdesrc-build && \
-ln -s $ADIR/extragear/kdesrc-build/kdesrc-build $ADIR/kdesrc-build && \
-ln -s $ADIR/kdesrc-conf-android/kdesrc-buildrc $ADIR/kdesrc-buildrc
+  mkdir -p $ADIR/extragear/kdesrc-build && \
+  git clone git://anongit.kde.org/kdesrc-build $ADIR/extragear/kdesrc-build && \
+  ln -s $ADIR/extragear/kdesrc-build/kdesrc-build $ADIR/kdesrc-build && \
+  ln -s $ADIR/kdesrc-conf-android/kdesrc-buildrc $ADIR/kdesrc-buildrc
 
-RUN cd $ADIR && ./kdesrc-build extra-cmake-modules
+RUN cd $ADIR && \
+  ./kdesrc-build extra-cmake-modules
 
 RUN echo "Configuration finished, finalizing Docker image..."
+
