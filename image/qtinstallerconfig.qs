@@ -106,9 +106,7 @@ Controller.prototype.FinishedPageCallback = function()
 {
     console.log("Installation finished.")
     var page = gui.pageWidgetByObjectName("FinishedPage")
-    // work-around for disabling QtCreator launch:
-    // apparently the page.RunItCheckBox option is not used
-    // but rejecting installer here is safe
-    gui.reject()
+    console.log(page.LaunchQtCreatorCheckBoxForm.launchQtCreatorCheckBox.setChecked(false));
+    gui.clickButton(buttons.FinishButton)
 }
 
