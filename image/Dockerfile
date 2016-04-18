@@ -81,7 +81,7 @@ RUN echo "Download NDK..." && \
 
 #get Qt for Android
 RUN echo "Qt Installer: downloading..." && \
-  curl http://master.qt.io/archive/qt/5.5/5.5.0/qt-opensource-linux-x64-android-5.5.0-2.run -o $ADIR/qt-installer.run && \
+  curl http://master.qt.io/archive/qt/5.6/5.6.0/qt-opensource-linux-x64-android-5.6.0.run -o $ADIR/qt-installer.run && \
   chmod +x $ADIR/qt-installer.run
 
 COPY qtinstallerconfig.qs $ADIR/qtinstallerconfig.qs
@@ -102,13 +102,13 @@ RUN echo "\n\
 export ADIR=$ADIR\n\
 export ANDROID_NDK=$ADIR/android-ndk-r10e\n\
 export ANDROID_SDK_ROOT=$ADIR/android-sdk-linux\n\
-export Qt5_android=$ADIR/Qt5.5.0/5.5/android_armv7/\n\
+export Qt5_android=$ADIR/Qt5.6.0/5.6/android_armv7/\n\
 export PATH=$ADIR/android-sdk-linux/platform-tools/:$PATH\n\
 export ANT=/usr/bin/ant\n\
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/\n\
 \n\
 function cmakeandroid {\n\
-    cmake \$@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH=\"$ADIR/Qt5.5.0/5.5/android_armv7/;$ADIR/kde/install\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake\n\
+    cmake \$@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH=\"$ADIR/Qt5.6.0/5.6/android_armv7/;$ADIR/kde/install\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake\n\
 }\n\
 " >> /home/kdeandroid/.bashrc
 

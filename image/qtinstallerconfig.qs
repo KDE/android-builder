@@ -1,5 +1,5 @@
 /*  
-   Copyright 2015  Andreas Cord-Landwehr <cordlandwehr@kde.org>
+   Copyright 2015-2016  Andreas Cord-Landwehr <cordlandwehr@kde.org>
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions
@@ -25,7 +25,7 @@
 
 function Controller()
 {
-    console.log("Control script loaded: Qt 5.5 Android with Linux 64 bit host.")
+    console.log("Control script loaded: Qt 5.6 Android with Linux 64 bit host.")
     installer.autoRejectMessageBoxes
 }
 
@@ -62,7 +62,7 @@ Controller.prototype.TargetDirectoryPageCallback = function()
 {
     var page = gui.pageWidgetByObjectName("TargetDirectoryPage")
     // set target directory
-    page.TargetDirectoryLineEdit.text = "/opt/android/Qt5.5.0"
+    page.TargetDirectoryLineEdit.text = "/opt/android/Qt5.6.0"
     gui.clickButton(buttons.NextButton)
 }
 
