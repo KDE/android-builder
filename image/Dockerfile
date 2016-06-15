@@ -6,6 +6,21 @@ MAINTAINER Andreas Cord-Landwehr <cordlandwehr@kde.org>
 ENV ADIR /opt/android
 RUN mkdir -p $ADIR
 
+# skeleton files that are used for all users
+RUN echo "\n\
+export ADIR=$ADIR\n\
+export ANDROID_NDK=$ADIR/android-ndk-r10e\n\
+export ANDROID_SDK_ROOT=$ADIR/android-sdk-linux\n\
+export Qt5_android=$ADIR/Qt5.6.0/5.6/android_armv7/\n\
+export PATH=$ADIR/android-sdk-linux/platform-tools/:$PATH\n\
+export ANT=/usr/bin/ant\n\
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/\n\
+\n\
+function cmakeandroid {\n\
+    cmake \$@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH=\"$ADIR/Qt5.6.0/5.6/android_armv7/:$ADIR/kde/install\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake\n\
+}\n\
+" >> /etc/skel/.bashrc
+
 RUN echo "deb [arch=armhf] http://ports.ubuntu.com/ wily main universe restricted\n\
 deb-src [arch=armhf]  http://ports.ubuntu.com/ wily main universe restricted\n\
 \n\
@@ -42,9 +57,14 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   libc6:i386 \
   zlib1g:i386
 
-RUN adduser kdeandroid --gecos "" --disabled-password && \
+RUN addgroup builders
+
+RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
+  adduser jenkins --ingroup builders --gecos "" --disabled-password && \
   echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers && \
-  chown -R kdeandroid:kdeandroid $ADIR
+  echo "jenkins      ALL=NOPASSWD:ALL" >> /etc/sudoers
+
+RUN chown -R kdeandroid:builders $ADIR
 
 USER kdeandroid
 RUN echo "[url \"git://anongit.kde.org/\"]\n\
@@ -55,7 +75,7 @@ RUN echo "[url \"git://anongit.kde.org/\"]\n\
 
 # get SDK
 COPY accept-sdk-license.sh $ADIR/accept-sdk-license.sh
-RUN sudo chown kdeandroid:kdeandroid $ADIR/accept-sdk-license.sh && \
+RUN sudo chown kdeandroid:builders $ADIR/accept-sdk-license.sh && \
   chmod +x $ADIR/accept-sdk-license.sh
 RUN echo "Download SDK..." && \
   curl http://dl.google.com/android/android-sdk_r24.3.4-linux.tgz -o $ADIR/android-sdk.tgz && \
@@ -97,20 +117,6 @@ RUN sudo apt-get remove -y\
   sudo apt-get autoremove -y && \
   rm $ADIR/qt-installer.run && \
   rm $ADIR/qtinstallerconfig.qs
-
-RUN echo "\n\
-export ADIR=$ADIR\n\
-export ANDROID_NDK=$ADIR/android-ndk-r10e\n\
-export ANDROID_SDK_ROOT=$ADIR/android-sdk-linux\n\
-export Qt5_android=$ADIR/Qt5.6.0/5.6/android_armv7/\n\
-export PATH=$ADIR/android-sdk-linux/platform-tools/:$PATH\n\
-export ANT=/usr/bin/ant\n\
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/\n\
-\n\
-function cmakeandroid {\n\
-    cmake \$@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH=\"$ADIR/Qt5.6.0/5.6/android_armv7/:$ADIR/kde/install\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake\n\
-}\n\
-" >> /home/kdeandroid/.bashrc
 
 # get KDESRC build and android configurations
 RUN git clone git://anongit.kde.org/scratch/cordlandwehr/kdesrc-conf-android.git $ADIR/kdesrc-conf-android && \
