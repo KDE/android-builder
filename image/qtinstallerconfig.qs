@@ -79,11 +79,11 @@ Controller.prototype.ComponentSelectionPageCallback = function()
 {
     var page = gui.pageWidgetByObjectName("ComponentSelectionPage")
     page.deselectAll()
-    page.selectComponent("qt.55.android_armv7")
-    page.selectComponent("qt.55.qtquickcontrols")
-    page.selectComponent("qt.55.qtscript")
-    page.selectComponent("qt.55.qtlocation")
-    page.selectComponent("qt.55.qt3d")
+    page.selectComponent("qt.56.android_armv7")
+    page.selectComponent("qt.56.qtquickcontrols")
+    page.selectComponent("qt.56.qtscript")
+    page.selectComponent("qt.56.qtlocation")
+    page.selectComponent("qt.56.qt3d")
 
     gui.clickButton(buttons.NextButton)
 }
