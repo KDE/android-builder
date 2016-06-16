@@ -64,7 +64,8 @@ RUN addgroup builders
 RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   adduser jenkins --ingroup builders --gecos "" --disabled-password && \
   echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers && \
-  echo "jenkins      ALL=NOPASSWD:ALL" >> /etc/sudoers
+  echo "jenkins      ALL=NOPASSWD:ALL" >> /etc/sudoers && \
+  echo 'jenkins:jenkins' | chpasswd
 
 RUN chown -R kdeandroid:builders $ADIR
 

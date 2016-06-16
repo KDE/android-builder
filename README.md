@@ -11,8 +11,8 @@ This image provides an Ubuntu/Wily with the following extras:
  * all needed variables for ECM-CMake Toolchain are set
  * command "cmakeandroid" that provides a convenience call to CMake with the toolchain enabled
 * the image provides two users
- * kdeandroid: default user for a developer
- * jenkins: default user for CI system
+ * kdeandroid: default user for a developer, no password
+ * jenkins: default user for CI system, password "jenkins"
 
 ## Proposed Workflow for Image Creation
 Create the image
