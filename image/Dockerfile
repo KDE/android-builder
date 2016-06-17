@@ -59,8 +59,10 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   libgcc1:i386 \
   libc6:i386 \
   zlib1g:i386
-
-RUN addgroup builders
+  
+RUN groupadd -g 1000 jenkins && \
+  useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
+  addgroup builders
 
 RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   adduser jenkins --ingroup builders --gecos "" --disabled-password && \
@@ -68,9 +70,8 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   echo "jenkins      ALL=NOPASSWD:ALL" >> /etc/sudoers && \
   echo 'jenkins:jenkins' | chpasswd
 
-RUN groupadd -g 1000 jenkins && \
-  useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
-  chown -R kdeandroid:builders $ADIR
+
+RUN chown -R kdeandroid:builders $ADIR
 
 # Enable SSH for CI 
 RUN mkdir -p /var/run/sshd &&
