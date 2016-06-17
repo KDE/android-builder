@@ -68,8 +68,8 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   echo "jenkins      ALL=NOPASSWD:ALL" >> /etc/sudoers && \
   echo 'jenkins:jenkins' | chpasswd
 
-RUN groupadd -g 1000 jenkins &&
-  useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins &&
+RUN groupadd -g 1000 jenkins && \
+  useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
   chown -R kdeandroid:builders $ADIR
 
 # Enable SSH for CI 
