@@ -71,8 +71,8 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   chown -R kdeandroid:builders $ADIR
 
 # Enable SSH for CI 
-RUN mkdir -p /var/run/sshd &&
-  dpkg-reconfigure openssh-server
+RUN mkdir -p /var/run/sshd && \
+  dpkg-reconfigure openssh-server 
 EXPOSE 22
 
 USER kdeandroid
