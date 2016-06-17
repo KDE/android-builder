@@ -49,6 +49,7 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   openjdk-7-jdk \
   openjdk-7-jre \
   qt5-qmake \
+  ssh \
   sudo \
 # required for ki18n
   gettext \
