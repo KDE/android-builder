@@ -68,7 +68,14 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   echo "jenkins      ALL=NOPASSWD:ALL" >> /etc/sudoers && \
   echo 'jenkins:jenkins' | chpasswd
 
-RUN chown -R kdeandroid:builders $ADIR
+RUN groupadd -g 1000 jenkins &&
+  useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins &&
+  chown -R kdeandroid:builders $ADIR
+
+# Enable SSH for CI 
+RUN mkdir -p /var/run/sshd &&
+  dpkg-reconfigure openssh-server
+EXPOSE 22
 
 USER kdeandroid
 RUN echo "[url \"git://anongit.kde.org/\"]\n\
@@ -131,6 +138,8 @@ RUN git clone git://anongit.kde.org/scratch/cordlandwehr/kdesrc-conf-android.git
 
 RUN cd $ADIR && \
   ./kdesrc-build extra-cmake-modules
-
+  
 RUN echo "Configuration finished, finalizing Docker image..."
+
+CMD ["/usr/sbin/sshd", "-D"]
 
