@@ -74,7 +74,10 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
 
 # Enable SSH for CI 
 RUN mkdir -p /var/run/sshd && \
-  dpkg-reconfigure ssh 
+  dpkg-reconfigure ssh && \
+  mkdir -p /var/run/sshd && chmod 744 /var/run/sshd
+
+# Open port for SSH
 EXPOSE 22
 
 USER kdeandroid
