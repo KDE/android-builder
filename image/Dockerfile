@@ -62,10 +62,10 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   
 RUN groupadd -g 1000 jenkins && \
   useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
-  usermod -G builder jenkins && \
   echo "jenkins ALL=NOPASSWD:ALL" >> /etc/sudoers
   
-RUN addgroup builders
+RUN addgroup builders && \
+  usermod -G builder jenkins
 
 RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \  
   echo "kdeandroid   ALL=NOPASSWD:ALL" >> /etc/sudoers && \
