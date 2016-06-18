@@ -62,6 +62,7 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   
 RUN groupadd -g 1000 jenkins && \
   useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
+  echo 'jenkins:jenkins' | chpasswd && \
   echo "jenkins ALL=NOPASSWD:ALL" >> /etc/sudoers
   
 RUN addgroup builders && \
@@ -73,7 +74,7 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
 
 # Enable SSH for CI 
 RUN mkdir -p /var/run/sshd && \
-  dpkg-reconfigure openssh-server 
+  dpkg-reconfigure ssh 
 EXPOSE 22
 
 USER kdeandroid
@@ -139,6 +140,8 @@ RUN cd $ADIR && \
   ./kdesrc-build extra-cmake-modules
   
 RUN echo "Configuration finished, finalizing Docker image..."
+
+USER root
 
 CMD ["/usr/sbin/sshd", "-D"]
 
