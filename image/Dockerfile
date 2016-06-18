@@ -58,7 +58,9 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
 # required i386 architecture libraries
   libgcc1:i386 \
   libc6:i386 \
-  zlib1g:i386
+  zlib1g:i386 \
+# required for CI buildsystem
+  python3-lxml
   
 RUN groupadd -g 1000 jenkins && \
   useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
@@ -73,8 +75,7 @@ RUN adduser kdeandroid --ingroup builders --gecos "" --disabled-password && \
   chown -R kdeandroid:builders $ADIR
 
 # Enable SSH for CI 
-RUN mkdir -p /var/run/sshd && \
-  dpkg-reconfigure ssh && \
+RUN dpkg-reconfigure ssh && \
   mkdir -p /var/run/sshd && chmod 744 /var/run/sshd
 
 # Open port for SSH
