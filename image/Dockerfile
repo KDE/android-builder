@@ -61,6 +61,8 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   zlib1g:i386 \
 # required for CI buildsystem
   python3-lxml
+  python2
+  python-lxml
   
 RUN groupadd -g 1000 jenkins && \
   useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
