@@ -53,7 +53,7 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   sudo \
 # required for ki18n
   gettext \
-# virtual framebuffer to provide X window for the Qt installer
+# virtual framebuffer to provide X window for the Qt installer and unit tests
   xvfb \
 # required i386 architecture libraries
   libgcc1:i386 \
@@ -128,7 +128,6 @@ RUN xvfb-run -a $ADIR/qt-installer.run --script $ADIR/qtinstallerconfig.qs|grep 
 
 # cleanup
 RUN sudo apt-get remove -y\
-    xvfb \
     expect \
     curl && \
   sudo apt-get autoremove -y && \
