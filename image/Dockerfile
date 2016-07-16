@@ -55,6 +55,8 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   gettext \
 # virtual framebuffer to provide X window for the Qt installer and unit tests
   xvfb \
+# required for CI unit tests
+  openbox \
 # required i386 architecture libraries
   libgcc1:i386 \
   libc6:i386 \
