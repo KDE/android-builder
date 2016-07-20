@@ -64,7 +64,8 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
 # required for CI buildsystem
   python3-lxml \
   python2.7 \
-  python-lxml
+  python-lxml \
+  gcovr
   
 RUN groupadd -g 1000 jenkins && \
   useradd -m -u 1000 -g 1000 -d /home/jenkins jenkins && \
