@@ -6,11 +6,15 @@ MAINTAINER Andreas Cord-Landwehr <cordlandwehr@kde.org>
 ENV ADIR /opt/android
 RUN mkdir -p $ADIR
 
+# set ANDROID_* environment variables globally
+RUN echo "\n\
+ANDROID_NDK=/opt/android/android-ndk-r10e\n\
+ANDROID_SDK_ROOT=/opt/android/android-sdk-linux\n\
+" >> /etc/environment
+
 # skeleton files that are used for all users
 RUN echo "\n\
 export ADIR=$ADIR\n\
-export ANDROID_NDK=$ADIR/android-ndk-r10e\n\
-export ANDROID_SDK_ROOT=$ADIR/android-sdk-linux\n\
 export Qt5_android=$ADIR/Qt5.6.0/5.6/android_armv7/\n\
 export PATH=$ADIR/android-sdk-linux/platform-tools/:$PATH\n\
 export ANT=/usr/bin/ant\n\
