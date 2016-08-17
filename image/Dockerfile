@@ -8,7 +8,7 @@ RUN mkdir -p $ADIR
 
 # set ANDROID_* environment variables globally
 RUN echo "\n\
-ANDROID_NDK=/opt/android/android-ndk-r12b\n\
+ANDROID_NDK=/opt/android/android-ndk-r10e\n\
 ANDROID_SDK_ROOT=/opt/android/android-sdk-linux\n\
 " >> /etc/environment
 
@@ -47,7 +47,6 @@ RUN dpkg --add-architecture i386 && apt update && apt-get install -y \
   curl \
   expect \
   git \
-  unzip \
 # required for running kdesrc-build
   libxml-simple-perl \
   libjson-perl \
@@ -115,12 +114,13 @@ RUN echo "Download SDK..." && \
 
 # get NDK
 RUN echo "Download NDK..." && \
-  curl http://dl.google.com/android/repository/android-ndk-r12b-linux-x86_64.zip -o $ADIR/android-ndk.zip && \
+  curl http://dl.google.com/android/ndk/android-ndk-r10e-linux-x86_64.bin -o $ADIR/android-ndk.bin && \
   echo "NDK: unpacking..." && \
+  chmod +x $ADIR/android-ndk.bin && \
   cd $ADIR && \
-  unzip android-ndk.zip && \
+  ./android-ndk.bin && \
   cd / && \
-  rm $ADIR/android-ndk.zip && \
+  rm $ADIR/android-ndk.bin && \
   echo "NDK: done."
 
 #get Qt for Android
