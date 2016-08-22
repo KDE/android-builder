@@ -9,8 +9,21 @@ use Data::Dumper;
 ###############################
 # GLOBALS
 ###############################
+my $Qt5_PATH = $ENV{'Qt5_android'};
+my $ANDROID_NDK = $ENV{'ANDROID_NDK'};
+my $ANDROID_SDK_ROOT = $ENV{'ANDROID_SDK_ROOT'};
+# TODO hardcoded for now:
+my $ANDROID_TOOLCHAIN = "arm-linux-androideabi";
+my $ANDROID_ABI = "armeabi-v7a";
+my $ANDROID_GCC_VERSION = "4.9";
+my $NDK_HOST  = "linux-x86_64";
+# set(ANDROID_API_LEVEL "14" CACHE string "Android API Level")
+my $ANDROID_SDK_BUILD_TOOLS_REVISION = "21.1.1";
+
 # path to directory containing script files
 my $rootdir = substr(abs_path($0), 0, rindex(abs_path($0), "/") + 1);
+# FIXME do not use absolute path
+my $manifestfile = "/host/android/android-builder/scripts/runtests/manifest/AndroidManifest.xml";
 
 executeAllTests();
 
@@ -51,17 +64,20 @@ sub executeTest {
     my $test = shift;
 
     # directory for perform the packaging
-    my $apkdir = "$dir/apk_$test/";
+    my $apk_srcdir = "$dir/apksrc_$test/";
+    my $apk_outputdir = "$dir/apkoutput_$test/";
     # TODO remove previous directory
-    mkdir "$apkdir";
+    mkdir "$apk_srcdir";
+    `mkdir -p $apk_outputdir/libs/$ANDROID_ABI/`;
 
-    copy("$rootdir/manifest/AndroidManifest.xml", "$apkdir/AndroidManifest.xml") or die "Copy failed: $!";
+    # generate APK
+    generateDeploymentFile($dir, $test, $apk_srcdir);
+    copy("$rootdir/manifest/AndroidManifest.xml", "$apk_srcdir/AndroidManifest.xml") or die "Copy failed: $!";
+    copy("$dir/$test", "$apk_outputdir/libs/$ANDROID_ABI/$test") or die "Copy failed: $!";
 
-    generateDeploymentFile($dir, $test, $apkdir);
-
-    # COMMAND $<TARGET_FILE_DIR:Qt5::qmake>/androiddeployqt --input "${QTANDROID_EXPORTED_TARGET}-deployment.json" --output "${EXPORT_DIR}" --deployment bundled "\\$(ARGS)"
-
-    # TODO run test now!
+    # real command:
+    # /opt/android/Qt5.6.0/5.6/android_armv7/bin/androiddeployqt --input autotests/persontest-deployment.json --output autotests/apk_persontest/
+    system("/opt/android/Qt5.6.0/5.6/android_armv7/bin/androiddeployqt --input $dir/$test-deployment.json --output $apk_outputdir");
 }
 
 # generate $test-deployment.json file
@@ -96,20 +112,9 @@ sub generateDeploymentFile {
 #     print Dumper(@libCandidates);
     my $extralibs = join(',', @libCandidates);
 
-    # set further variables
-    my $Qt5_PATH = $ENV{'Qt5_android'};
-    my $ANDROID_NDK = $ENV{'ANDROID_NDK'};
-    my $ANDROID_SDK_ROOT = $ENV{'ANDROID_SDK_ROOT'};
-    # TODO hardcoded for now:
-    my $ANDROID_TOOLCHAIN = "arm-linux-androideabi";
-    my $ANDROID_ABI = "armeabi-v7a";
-    my $ANDROID_GCC_VERSION = "4.9";
-    my $NDK_HOST  = "linux-x86_64";
-    # set(ANDROID_API_LEVEL "14" CACHE string "Android API Level")
-    my $ANDROID_SDK_BUILD_TOOLS_REVISION = "21.1.1";
-
-    # do same computation as cmake toolchain
-    my $executable_dest_path = "$apkdir/libs/$ANDROID_ABI/lib$test.so";
+    # note: since we handle unit tests, compute path different than CMake
+    # in CMake toolchain: "$apkdir/libs/$ANDROID_ABI/lib$test.so";
+    my $executable_dest_path = "$dir/$test";
 
     # write file
     my $deploymentFile = "{
