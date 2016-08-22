@@ -6,50 +6,77 @@ use File::Copy;
 use Cwd qw(abs_path);
 use Data::Dumper;
 
+###############################
+# GLOBALS
+###############################
 # path to directory containing script files
 my $rootdir = substr(abs_path($0), 0, rindex(abs_path($0), "/") + 1);
 
-# parse CTestTestfile.cmake in autotest subfolder for all provided unit tests 
-my $filename = "autotests/CTestTestfile.cmake";
-open(my $fh, '<:encoding(UTF-8)', $filename)
-    or die "Could not open file '$filename' $!";
+executeAllTests();
 
-my @matches;
-while (my $row = <$fh>) {
-    chomp $row;
-    if ($row =~ /add_test\((.*) \"(.*)\"\)/s) { 
-        push @matches, $2;
+###############################
+
+sub executeAllTests {
+    # parse CTestTestfile.cmake in autotest subfolder for all provided unit tests
+    my $filename = "autotests/CTestTestfile.cmake";
+    open(my $fh, '<:encoding(UTF-8)', $filename)
+        or die "Could not open file '$filename' $!";
+
+    my @matches;
+    while (my $row = <$fh>) {
+        chomp $row;
+        if ($row =~ /add_test\((.*) \"(.*)\"\)/s) {
+            push @matches, $2;
+        }
     }
+    print "Found Tests:\n";
+    print "$_\n" for @matches;
+    print "\n";
+
+    # now execute for every match
+    # FIXME use only the first one
+    print "Generating APK for unit test $matches[0]\n";
+    # directory with tailing '/'
+    my $dir = substr($matches[0], 0, rindex($matches[0], "/") + 1);
+    my $test = substr($matches[0], rindex($matches[0], "/") + 1);
+
+    executeTest($dir, $test);
 }
-print "Found Tests:\n";
-print "$_\n" for @matches;
-print "\n";
 
-# now execute for every match
-# FIXME use only the first one
-print "Generating APK for unit test $matches[0]\n";
-# directory with tailing '/'
-my $dir = substr($matches[0], 0, rindex($matches[0], "/") + 1);
-my $test = substr($matches[0], rindex($matches[0], "/") + 1);
+# execute the given test case
+# @param $dir test directory
+# @param $test the test name
+sub executeTest {
+    my $dir = shift;
+    my $test = shift;
 
-# directory for perform the packaging
-my $apkdir = "$dir/apk_$test/";
-# TODO remove previous directory
-mkdir "$apkdir";
+    # directory for perform the packaging
+    my $apkdir = "$dir/apk_$test/";
+    # TODO remove previous directory
+    mkdir "$apkdir";
 
-copy("$rootdir/manifest/AndroidManifest.xml", "$apkdir/AndroidManifest.xml") or die "Copy failed: $!";
+    copy("$rootdir/manifest/AndroidManifest.xml", "$apkdir/AndroidManifest.xml") or die "Copy failed: $!";
 
-generateDeploymentFile();
+    generateDeploymentFile($dir, $test, $apkdir);
 
-# COMMAND $<TARGET_FILE_DIR:Qt5::qmake>/androiddeployqt --input "${QTANDROID_EXPORTED_TARGET}-deployment.json" --output "${EXPORT_DIR}" --deployment bundled "\\$(ARGS)"
+    # COMMAND $<TARGET_FILE_DIR:Qt5::qmake>/androiddeployqt --input "${QTANDROID_EXPORTED_TARGET}-deployment.json" --output "${EXPORT_DIR}" --deployment bundled "\\$(ARGS)"
 
-# generate $test-deploymnet.json file
-sub generateDeploymentFile
-{
+    # TODO run test now!
+}
+
+# generate $test-deployment.json file
+# @param $dir test directory
+# @param $test the test name
+# @param $apkdir the temporary directory for executing the test
+sub generateDeploymentFile {
+    my $dir = shift;
+    my $test = shift;
+    my $apkdir = shift;
+
     # parse CMake generated dependencies
     # NOTE: same code is in the android toolchain and we should merge it
-    open($fh, '<:encoding(UTF-8)', "$dir/CMakeFiles/$test.dir/link.txt")
-        or die "Could not open file '$filename' $!";
+    open(my $fh, '<:encoding(UTF-8)', "$dir/CMakeFiles/$test.dir/link.txt")
+        or die "Could not open file '$dir/CMakeFiles/$test.dir/link.txt' $!";
     my $row = <$fh>;
     chomp $row;
     my @libCandidates = ($row =~ /[^ ]+\.so/g);
@@ -81,7 +108,7 @@ sub generateDeploymentFile
     # set(ANDROID_API_LEVEL "14" CACHE string "Android API Level")
     my $ANDROID_SDK_BUILD_TOOLS_REVISION = "21.1.1";
 
-    # do some computation as cmake toolchain
+    # do same computation as cmake toolchain
     my $executable_dest_path = "$apkdir/libs/$ANDROID_ABI/lib$test.so";
 
     # write file
@@ -98,10 +125,9 @@ sub generateDeploymentFile
     \"android-extra-libs\": \"$extralibs\",
     \"android-package-source-directory\": \"$apkdir\",
     \"sdkBuildToolsRevision\": \"$ANDROID_SDK_BUILD_TOOLS_REVISION\"
-    }";
+    }\n";
     open($fh, '>', "$dir/$test-deployment.json");
     print $fh $deploymentFile;
     close $fh;
     print "Created deployment file: $dir/$test-deployment.json\n";
-
 }
