@@ -21,7 +21,7 @@ export ANT=/usr/bin/ant\n\
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/\n\
 \n\
 function cmakeandroid {\n\
-    cmake \$@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH=\"$ADIR/Qt5.6.0/5.6/android_armv7/:$ADIR/kde/install\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake\n\
+    cmake \$@ -DCMAKE_INSTALL_PREFIX=$ADIR/kde/install -DCMAKE_PREFIX_PATH=\"$ADIR/Qt5.6.0/5.6/android_armv7/;$ADIR/kde/install\" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=$ADIR/kde/install/share/ECM/toolchain/Android.cmake\n\
 }\n\
 " >> /etc/skel/.bashrc
 
