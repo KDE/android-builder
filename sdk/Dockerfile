@@ -18,5 +18,4 @@ RUN apt-get -qq update && apt-get install -qq \
 USER user
 
 ENV ANDROID_NDK $ANDROID_NDK_ROOT
-ENV ADIR $HOME
 COPY gitconfig $HOME/.gitconfig
